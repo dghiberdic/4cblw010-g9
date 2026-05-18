@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:radarFile xmlns="http://radar-service.eu/schemas/descriptive/radar/v09/radar-elements" xmlns:ns2="http://radar-service.eu/schemas/descriptive/radar/v09/radar-file">
+    <creators>
+        <creator>
+            <creatorName>Pei-Chi, Huang</creatorName>
+            <givenName>Huang</givenName>
+            <familyName>Pei-Chi</familyName>
+            <creatorAffiliation>Karlsruhe Institute of Technology</creatorAffiliation>
+        </creator>
+    </creators>
+    <title>meta_data.json</title>
+    <descriptions>
+        <description descriptionType="TechnicalInfo">File contains meta data for the JCAMP files. Meta data can be mapped to their respective jcamp files with field "identifier". Following meta data are listed in the file : 1. sample_id : sample id from the chemotion repository. 2. kind : kind of IR spectrum. 3. analysis_id : analysis id from the chemotion repository , 4. cano_smiles: canonical SMILES code for the sample. 5. authors: author id, name, orcid id, given name, family name, affiliations id of the author who published the data in chemotion repository. 6. affiliations: afflliations of the author. 7. content: interpretation of the measurement file given in text form, 8. datasets: file name and identifier of the jcamp file. 9. instrument: instrument used to measure IR spectrum </description>
+    </descriptions>
+    <productionYear>2023</productionYear>
+    <subjectAreas>
+        <subjectArea>
+            <controlledSubjectAreaName>Chemistry</controlledSubjectAreaName>
+        </subjectArea>
+    </subjectAreas>
+    <resource resourceType="Dataset"></resource>
+    <dataSources>
+        <dataSource dataSourceDetail="Other">Chemotion Repository</dataSource>
+    </dataSources>
+</ns2:radarFile>

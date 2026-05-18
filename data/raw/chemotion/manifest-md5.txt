@@ -1,0 +1,8 @@
+ea9e1ec73d290b2ad3953f34206a1d3c  data/readme.txt
+f7770cc6d7ae9fd025b22e5b02a3c622  data/technical-md/dataset.tech_md.xml
+f567eadb9117caba9c0b4051da5e7dc9  data/dataset/README.md
+1ef717ec8fa70cf43304c06ed37c109e  data/descriptive-md/dataset.desc_md.xml
+7651fbdbce6c99a1880521f75b6da4ca  data/dataset/JCAMP-DX Files/IR_data.tar.xz
+31d9b064fe2a979f9b7d94bae5d3bb68  data/dataset/meta_data.json
+d0b48c0189d44b125873b3ca55e4bed9  data/descriptive-md/dataset/meta_data.json.desc_md.xml
+33bb530de4ad925db265afc2544aba87  data/descriptive-md/dataset/JCAMP-DX Files.desc_md.xml

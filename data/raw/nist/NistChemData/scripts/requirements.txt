@@ -1,0 +1,13 @@
+# Core dependencies for NistChemData local reconstruction scripts.
+#
+# Requires NistChemPy's user-local WebBook index API from the 2.0 development /
+# release line. Install NistChemPy from the sibling repository during local
+# release preparation if the 2.0 package is not yet published.
+nistchempy>=2.0.0,<3
+
+# Shared script/runtime dependencies.
+tqdm
+pandas
+
+# Required only by process_ir_spectra.py for reading JCAMP-DX/JDX headers.
+jcamp

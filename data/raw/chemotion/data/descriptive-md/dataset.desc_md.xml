@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:radarDataset xmlns="http://radar-service.eu/schemas/descriptive/radar/v09/radar-elements" xmlns:ns2="http://radar-service.eu/schemas/descriptive/radar/v09/radar-dataset">
+    <identifier identifierType="DOI">10.22000/OGoEQGlsZGElrgst</identifier>
+    <creators>
+        <creator>
+            <creatorName>Jung, Nicole</creatorName>
+            <givenName>Nicole</givenName>
+            <familyName>Jung</familyName>
+            <nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">0000-0001-9513-2468</nameIdentifier>
+        </creator>
+        <creator>
+            <creatorName>Tremouilhac, Pierre </creatorName>
+            <givenName>Pierre </givenName>
+            <familyName>Tremouilhac</familyName>
+            <nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">0000-0002-0487-3947</nameIdentifier>
+        </creator>
+        <creator>
+            <creatorName>Punjabi, Dev</creatorName>
+            <givenName>Dev</givenName>
+            <familyName>Punjabi</familyName>
+            <nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">0009-0008-1847-2563</nameIdentifier>
+        </creator>
+        <creator>
+            <creatorName>Huang, Pei-Chi</creatorName>
+            <givenName>Pei-Chi</givenName>
+            <familyName>Huang</familyName>
+            <nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">0000-0002-9976-4507</nameIdentifier>
+        </creator>
+    </creators>
+    <title>Chemotion Repository - Data collection: FT-IR spectroscopy data (Chemotion IR)</title>
+    <descriptions>
+        <description descriptionType="TableOfContents">This dataset comprises experimental data obtained from the characterization of chemical compounds synthesized across various chemical laboratories. The data was published in the Chemotion repository which primarily serves to validate findings in scientific publications, in compliance with diverse funding agencies and publisher recommendations. At the time of export, a majority of the data originated from the chemical laboratories at the Karlsruhe Institute of Technology, with a smaller portion contributed by other research institutes in Germany. </description>
+        <description descriptionType="TechnicalInfo">The provided zip folder includes 4183 *.jdx files and one metadata file "meta_data.json" with metadata describing all the files</description>
+        <description descriptionType="TechnicalInfo">The metadata file "meta_data.json" contains the following metadata per dataset: sample_id, cano_smiles, kind, analysis_id, authors, affiliations, content, datasets,  filename, identifier and instrument.</description>
+        <description descriptionType="Other">The collection was gained from contributions of the following scientists: Aleksandra Vidyakina, Alex Braun, Alexander B. Braun,        Alina Hermann, Andreas Link, André Jung, Changming Hu,        Chloé Liagre, Christian Conrads, Christoph Schissler,        Christoph Zippel, Claudine Herlan, Cornelia Mattern,        Daniel Knoll, Fabian Hundemer, Florian Mohr,        Franziska Spruner von Mertz, Georg Manolikakes, Helena Šimek,        Ilga Kristine  Krimmelbein, Irina Protasova,        Isabelle Wessely, Janina Beck, Jasmin Busch, Joana Krämer,        Joshua Heck, Julian Brückel, Jérôme Klein,        Konstantin Kröckert, Ksenia Kutonova, Laura Holzhauer,        Lisa Schmidt, Lukas Langer, Maria Marques,        Mareen Stahlberger, Melanie Paul,        Michael Konstantinos Bogdos, Nicolai Rosenbaum,        Nicolai Wippert, Nicole Jung, Niklas Krappel,        Nilima Manoj Kumar, Patrick Hodapp, Rachel Janßen,        Regina Schmidt, Robin Bär, Simon Oßwald, Simone Gräßle,        Stefan Marschner, Steffen Otterbach, Susanne Kirchner,        Sylvain Grosjean, Sylvia Vanderheiden-Schroen, Thomas Hurrle,        Till Opatz, Timo Sehn, Toni Ditfe, Ulrich Herber,  Vanessa Koch, Victor Larignon, Xujun Qiu, Yannick Matt,  Yichuan Wang, Yu-Chieh Huang, Zhen Zhang</description>
+    </descriptions>
+    <keywords>
+        <keyword keywordScheme="Other">Organic Chemistry</keyword>
+        <keyword keywordScheme="Other">JCAMP-DX</keyword>
+        <keyword keywordScheme="Other">Cheminformatics</keyword>
+        <keyword keywordScheme="Other">Machine learning</keyword>
+        <keyword keywordScheme="Other">Functional groups</keyword>
+        <keyword keywordScheme="Other">IR spectroscopy</keyword>
+    </keywords>
+    <publishers>
+        <publisher nameIdentifierScheme="Other">Karlsruhe Institute of Technology</publisher>
+    </publishers>
+    <productionYear>2022-2023</productionYear>
+    <publicationYear>2024</publicationYear>
+    <subjectAreas>
+        <subjectArea>
+            <controlledSubjectAreaName>Chemistry</controlledSubjectAreaName>
+        </subjectArea>
+        <subjectArea>
+            <controlledSubjectAreaName>Computer Science</controlledSubjectAreaName>
+        </subjectArea>
+    </subjectAreas>
+    <resource resourceType="Dataset">Infrared Spectroscopy dataset of organic molecules</resource>
+    <dataSources>
+        <dataSource dataSourceDetail="Other">Chemotion Repository</dataSource>
+    </dataSources>
+    <software>
+        <softwareType type="Resource Production">
+            <softwareName softwareVersion="1.7">Chemotion Repository</softwareName>
+        </softwareType>
+        <softwareType type="Resource Viewing">
+            <softwareName softwareVersion="0.12">ChemSpectra</softwareName>
+        </softwareType>
+    </software>
+    <rights>
+        <controlledRights>CC BY-SA 4.0 Attribution-ShareAlike</controlledRights>
+    </rights>
+    <rightsHolders>
+        <rightsHolder nameIdentifierScheme="Other">Aleksandra Vidyakina, Alex Braun, Alexander B. Braun, Alina Hermann, Andreas Link, André Jung, Changming Hu, Chloé Liagre, Christian Conrads, Christoph Schissler, Christoph Zippel, Claudine Herlan, Cornelia Mattern, Daniel Knoll, Fabian Hundemer, Florian Mohr, Franziska Spruner von Mertz, Georg Manolikakes, Helena Šimek, Ilga Kristine  Krimmelbein, Irina Protasova, Isabelle Wessely, Janina Beck, Jasmin Busch, Joana Krämer, Joshua Heck, Julian Brückel, Jérôme Klein, Konstantin Kröckert, Ksenia Kutonova, Laura Holzhauer, Lisa Schmidt, Lukas Langer, Maria Marques, Mareen Stahlberger, Melanie Paul, Michael Konstantinos Bogdos, Nicolai Rosenbaum, Nicolai Wippert, Nicole Jung, Niklas Krappel, Nilima Manoj Kumar, Patrick Hodapp, Rachel Janßen, Regina Schmidt, Robin Bär, Simon Oßwald, Simone Gräßle, Stefan Marschner, Steffen Otterbach, Susanne Kirchner, Sylvain Grosjean, Sylvia Vanderheiden-Schroen, Thomas Hurrle, Till Opatz, Timo Sehn, Toni Ditfe, Ulrich Herber, Vanessa Koch, Victor Larignon, Xujun Qiu, Yannick Matt, Yichuan Wang, Yu-Chieh Huang, Zhen Zhang</rightsHolder>
+    </rightsHolders>
+</ns2:radarDataset>

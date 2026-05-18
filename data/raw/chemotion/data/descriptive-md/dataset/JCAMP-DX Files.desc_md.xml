@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:radarFile xmlns="http://radar-service.eu/schemas/descriptive/radar/v09/radar-elements" xmlns:ns2="http://radar-service.eu/schemas/descriptive/radar/v09/radar-file">
+    <creators>
+        <creator>
+            <creatorName>Tremouilhac, Pierre</creatorName>
+            <givenName>Pierre</givenName>
+            <familyName>Tremouilhac</familyName>
+            <nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">0000-0002-0487-3947</nameIdentifier>
+        </creator>
+    </creators>
+    <title>JCAMP-DX Files</title>
+    <descriptions>
+        <description descriptionType="TechnicalInfo">File contains zip file of chemotion IR dataset. Dataset contains individual jcamp files for each sample published in the chemotion repository. </description>
+    </descriptions>
+    <productionYear>2023</productionYear>
+    <subjectAreas>
+        <subjectArea>
+            <controlledSubjectAreaName>Chemistry</controlledSubjectAreaName>
+        </subjectArea>
+    </subjectAreas>
+    <resource resourceType="Dataset">Infrared spectrum dataset from Chemotion repository</resource>
+</ns2:radarFile>
