@@ -2,7 +2,6 @@ from jcamp import jcamp_read
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import CubicSpline
-import csv
 import os
 import json
 from pybaselines import Baseline, utils
@@ -48,6 +47,16 @@ SMARTS_fgroups = {
     "peroxide":        Chem.MolFromSmarts("[OX2,OX1-][OX2,OX1-]"),
 }
 
+technique = {
+    "ATR": 0,
+    "KBr": 0,
+    "Nujol": 0,
+    "mull": 0,
+    "neat": 0,
+    "film": 0,
+    "solution": 0
+}
+
 def parse():
     """
     Goals:
@@ -70,11 +79,13 @@ def format(raw_data: dict, mdata: dict, identifier: str) -> dict:
     xinterval = (raw_data['firstx'], raw_data['lastx'])
     spectrum_data = {
         "id": identifier,
-        "molecule": mdata[id],
+        "molecule": mdata[identifier],
         "fgroups": {},
         "xdata": np.linspace(min(xinterval),max(xinterval),raw_data['y'].size),
         "ydata": raw_data['y'] if xinterval[1]-xinterval[0] > 0 else raw_data['y'][::-1]
     }
+    if identifier == "02fb3c05-9928-4b59-aae8-9b9c27f5cf4d":
+        print(spectrum_data)
     return spectrum_data
 
 
@@ -140,9 +151,9 @@ if __name__ == "__main__":
                 id = attachment["identifier"].split('/')[1]
                 smiles = record["cano_smiles"]
                 metadata[id] = smiles
-    print(metadata)
+    print(metadata)    
+
     jsonfile.close()
-    
     accumulated_data = []
     skipped_files = []
     dir = r"data-preprocessing-pipeline\IR_data-chemotion\exp"
@@ -174,6 +185,7 @@ if __name__ == "__main__":
             continue
 
         accumulated_data.append(data)
+    
     
     # Writing to csv
     df = pd.DataFrame(accumulated_data)
