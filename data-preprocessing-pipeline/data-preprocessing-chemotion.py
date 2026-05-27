@@ -6,6 +6,8 @@ import csv
 import os
 import json
 from pybaselines import Baseline, utils
+from rdkit import Chem
+import pandas as pd
 
 """
 preprocessing pipeline
@@ -23,6 +25,28 @@ References:
 - DOI: 10.1021/acsomega.6c01193
 """
 
+SMARTS_fgroups = {
+    "ester":           Chem.MolFromSmarts("[#6][CX3](=O)[OX2H0][#6]"),
+    "carboxylic_acid": Chem.MolFromSmarts("[CX3](=O)[OX2H]"),
+    "alkane":          Chem.MolFromSmarts("[CX4;H3,H2]"),
+    "alkene":          Chem.MolFromSmarts("[CX3]=[CX3]"),
+    "alcohol":         Chem.MolFromSmarts("[#6][OX2H]"),
+    "arene":           Chem.MolFromSmarts("[cX3]1[cX3][cX3][cX3][cX3][cX3]1"),
+    "amine":           Chem.MolFromSmarts("[NX3;H2,H1,H0;!$(NC=O)]"),
+    "ketone":          Chem.MolFromSmarts("[#6][CX3](=O)[#6]"),
+    "ether":           Chem.MolFromSmarts("[OD2]([#6])[#6]"),
+    "imine":           Chem.MolFromSmarts("[$([CX3]([#6])[#6]),$([CX3H][#6])]=[$([NX2][#6]),$([NX2H])]"),
+    "sulfonamide":     Chem.MolFromSmarts("[#16X4]([NX3])(=[OX1])(=[OX1])[#6]"),
+    "acyl_halide":     Chem.MolFromSmarts("[CX3](=[OX1])[F,Cl,Br,I]"),
+    "phosphate":       Chem.MolFromSmarts("[#15X4](=[OX1])([OX2])[OX2]"),
+    "aldehyde":        Chem.MolFromSmarts("[CX3H1](=O)[#6,H]"),
+    "nitro":           Chem.MolFromSmarts("[$([NX3](=O)=O),$([NX3+](=O)[O-])][!#8]"),
+    "enamine":         Chem.MolFromSmarts("[NX3][CX3]=[CX3]"),
+    "azo":             Chem.MolFromSmarts("[#6][NX2]=[NX2][#6]"),
+    "sulfonic_acid":   Chem.MolFromSmarts("[$([#16X4](=[OX1])(=[OX1])([#6])[OX2H,OX1H0-]),$([#16X4+2]([OX1-])([OX1-])([#6])[OX2H,OX1H0-])]"),
+    "amide":           Chem.MolFromSmarts("[NX3][CX3](=[OX1])[#6]"),
+    "peroxide":        Chem.MolFromSmarts("[OX2,OX1-][OX2,OX1-]"),
+}
 
 def parse():
     """
@@ -46,7 +70,8 @@ def format(raw_data: dict, mdata: dict, identifier: str) -> dict:
     xinterval = (raw_data['firstx'], raw_data['lastx'])
     spectrum_data = {
         "id": identifier,
-        "smiles": mdata[id],
+        "molecule": mdata[id],
+        "fgroups": {},
         "xdata": np.linspace(min(xinterval),max(xinterval),raw_data['y'].size),
         "ydata": raw_data['y'] if xinterval[1]-xinterval[0] > 0 else raw_data['y'][::-1]
     }
@@ -70,7 +95,7 @@ def fit(spectrum_data: dict) -> np.ndarray:
     """
     y = spectrum_data['ydata']
     fitter = Baseline(x_data=spectrum_data['xdata'])
-    y_corr, params = fitter.modpoly(y, poly_order=3)
+    y_corr, params = fitter.mor(y, half_window=30)
     return y - y_corr
 
 def normalize(spectrum_data: dict) -> list[np.ndarray, np.ndarray]:
@@ -82,17 +107,22 @@ def normalize(spectrum_data: dict) -> list[np.ndarray, np.ndarray]:
     y_norm = (y - y.min())/(y.max() - y.min())
     return y_norm
 
-def label():
+def label(spectrum_data: dict) -> list[np.ndarray]:
     """
     Goal:
     - Assign functional groups using SMARTS patterns
     - Automatically assign said functional groups to compounds using RDKit
     """
-    pass
+    mol = Chem.MolFromSmiles(spectrum_data["molecule"])
+    if mol is None:
+        return 1
+    fgroups = dict([(key, mol.HasSubstructMatch(val)) for key, val  in SMARTS_fgroups.items()])
+    return fgroups
 
-def plot_spectrum(title: str, x: np.ndarray, y: np.ndarray):
+
+def plot_spectrum(smiles: str, x: np.ndarray, y: np.ndarray):
     plt.plot(x, y)
-    plt.title(title)
+    plt.title(smiles)
     plt.xlabel("Wavenumber (1/cm)")
     plt.ylabel("Transmittance")
     plt.gca().invert_xaxis()  # IR spectra conventionally go right-to-left
@@ -113,13 +143,10 @@ if __name__ == "__main__":
     print(metadata)
     jsonfile.close()
     
+    accumulated_data = []
     skipped_files = []
     dir = r"data-preprocessing-pipeline\IR_data-chemotion\exp"
-    csvfile = open(r"data-preprocessing-pipeline\spectra-chemotion.csv", "w")
     for entry in os.scandir(dir):
-        if str(entry.name)[0] == '1':
-            break
-
         # File reading
         print(entry.path)
         jcampfile = open(entry, "r")
@@ -135,13 +162,25 @@ if __name__ == "__main__":
             skipped_files.append((entry.path, f"version not a float, \"{raw_data['jcamp-dx']}\""))
             continue
             # raise Exception(f"JCAMP-DX version not supported, version {raw_data['jcamp-dx']} found")
+        
         data['xdata'], data['ydata'] = interpolate(data)
-        #data['ydata'] = fit(data)
+        data['ydata'] = 1 - data['ydata'] # Transmission -> Absorption
+        data['ydata'] = fit(data)
         data['ydata'] = normalize(data)
+        
+        data['fgroups'] = label(data)
+        if data['fgroups'] == 1:
+            skipped_files.append((entry.path, f"molecule could not be found, \"{data['molecule']}\""))
+            continue
 
-    csvfile.close()
+        accumulated_data.append(data)
+    
+    # Writing to csv
+    df = pd.DataFrame(accumulated_data)
+    df.to_csv("data-preprocessing-pipeline\spectra-chemotion.csv", index=False)
+
     for i, file in enumerate(skipped_files):
         print(f"{i+1} file:{file[0]}\nreason: {file[1]}\n")
 
-    plot_spectrum(data['smiles'],data['xdata'],data['ydata'])
-    print(data)
+    #plot_spectrum(data['molecule'],data['xdata'],data['ydata'])
+    #print(data)
