@@ -16,12 +16,6 @@ preprocessing pipeline
 4. Interpolation
 5. Normalization
 6. Labelling
-
-Relevant CSV headers
-
-
-References:
-- DOI: 10.1021/acsomega.6c01193
 """
 
 SMARTS_fgroups = {
@@ -47,15 +41,6 @@ SMARTS_fgroups = {
     "peroxide":        Chem.MolFromSmarts("[OX2,OX1-][OX2,OX1-]"),
 }
 
-technique = {
-    "ATR": 0,
-    "KBr": 0,
-    "Nujol": 0,
-    "mull": 0,
-    "neat": 0,
-    "film": 0,
-    "solution": 0
-}
 
 def parse():
     """
@@ -84,8 +69,6 @@ def format(raw_data: dict, mdata: dict, identifier: str) -> dict:
         "xdata": np.linspace(min(xinterval),max(xinterval),raw_data['y'].size),
         "ydata": raw_data['y'] if xinterval[1]-xinterval[0] > 0 else raw_data['y'][::-1]
     }
-    if identifier == "02fb3c05-9928-4b59-aae8-9b9c27f5cf4d":
-        print(spectrum_data)
     return spectrum_data
 
 
@@ -106,7 +89,7 @@ def fit(spectrum_data: dict) -> np.ndarray:
     """
     y = spectrum_data['ydata']
     fitter = Baseline(x_data=spectrum_data['xdata'])
-    y_corr, params = fitter.mor(y, half_window=30)
+    y_corr, params = fitter.asls(y, lam=1e4, p=1e-2)
     return y - y_corr
 
 def normalize(spectrum_data: dict) -> list[np.ndarray, np.ndarray]:
@@ -135,7 +118,7 @@ def plot_spectrum(smiles: str, x: np.ndarray, y: np.ndarray):
     plt.plot(x, y)
     plt.title(smiles)
     plt.xlabel("Wavenumber (1/cm)")
-    plt.ylabel("Transmittance")
+    plt.ylabel("Normalized Absorbance")
     plt.gca().invert_xaxis()  # IR spectra conventionally go right-to-left
     plt.show()
 
@@ -147,11 +130,10 @@ if __name__ == "__main__":
     metadata = {}
     for record in jsondata:
         for dataset in record["datasets"]:
-            for attachment in dataset["attacments"]:
+            for attachment in dataset["attacments"]:      
                 id = attachment["identifier"].split('/')[1]
                 smiles = record["cano_smiles"]
                 metadata[id] = smiles
-    print(metadata)    
 
     jsonfile.close()
     accumulated_data = []
@@ -175,7 +157,7 @@ if __name__ == "__main__":
             # raise Exception(f"JCAMP-DX version not supported, version {raw_data['jcamp-dx']} found")
         
         data['xdata'], data['ydata'] = interpolate(data)
-        data['ydata'] = 1 - data['ydata'] # Transmission -> Absorption
+        data['ydata'] = -np.log10(np.clip(data['ydata'], 1e-6, None)) # Transmission -> Absorbance
         data['ydata'] = fit(data)
         data['ydata'] = normalize(data)
         
@@ -186,13 +168,9 @@ if __name__ == "__main__":
 
         accumulated_data.append(data)
     
-    
     # Writing to csv
-    df = pd.DataFrame(accumulated_data)
-    df.to_csv("data-preprocessing-pipeline\spectra-chemotion.csv", index=False)
+    df = pd.DataFrame(accumulated_data)[["fgroups", "xdata", "ydata"]]
+    df.to_pickle("data-preprocessing-pipeline\spectra-chemotion.pkl")
 
     for i, file in enumerate(skipped_files):
         print(f"{i+1} file:{file[0]}\nreason: {file[1]}\n")
-
-    #plot_spectrum(data['molecule'],data['xdata'],data['ydata'])
-    #print(data)
