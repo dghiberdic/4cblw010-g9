@@ -6,7 +6,7 @@ from rdkit import RDLogger
 RDLogger.DisableLog("rdApp.*")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-IR_CSV = os.path.join(ROOT, "data/raw/nist/NistChemData/data/spectra/nist_ir_info.csv")
+IR_CSV = os.path.join(ROOT, "data/raw/nist_ir_info.csv")
 OUT_DIR = os.path.join(ROOT, "outputs")
 os.makedirs(OUT_DIR, exist_ok=True)
 

@@ -5,8 +5,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-IR_CSV  = os.path.join(ROOT, "data/raw/nist/NistChemData/data/spectra/nist_ir_info.csv")
-CMP_CSV = os.path.join(ROOT, "data/raw/nist/NistChemData/data/nist_compounds.csv")
+IR_CSV  = os.path.join(ROOT, "data/raw/nist_ir_info.csv")
+CMP_CSV = os.path.join(ROOT, "data/raw/nist_compounds.csv")
 OUT_DIR = os.path.join(ROOT, "outputs")
 os.makedirs(OUT_DIR, exist_ok=True)
 
