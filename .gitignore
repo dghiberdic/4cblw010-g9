@@ -1,2 +1,3 @@
 data/raw/IR/
 data-preprocessing-pipeline/spectra-chemotion.pkl
+data-preprocessing-pipeline/spectra-nist.pkl
