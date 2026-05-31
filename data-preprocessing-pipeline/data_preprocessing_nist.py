@@ -62,42 +62,69 @@ def label(spectrum_data: dict) -> list[np.ndarray]:
 
 if __name__ == "__main__":
     # Metadata import
-    metadata = pd.read_csv(r"data\raw\nist_ir_info.csv", dtype=str)[["cID", "inchi", "state"]]
-    metadata_state = metadata.set_index("cID")["state"].to_dict()
-    metadata_inchi = metadata.set_index("cID")["inchi"].to_dict()
+    metadata = pd.read_csv(r"data\raw\nist_ir_info.csv", dtype=str)[["cID", "inchi"]]
+    metadata = metadata.set_index("cID")["inchi"].to_dict()
     
     i = 0
     unknown_states = 0
     accumulated_data = []
     skipped_files = []
-    dir = r"data\IR"
+    dir = r"data\raw\IR"
     entries = len(os.listdir(dir))
     for entry in os.scandir(dir):
         i+=1
         # File reading
-        print(f"{i}/{entries}\t{entry.path}")
+        print(f"{i}/{entries}\t{entry.path}")  
         jcampfile = open(entry, "r")
         raw_data = jcamp_read(jcampfile)
         jcampfile.close()
         
         id_ = entry.name.split('_')[0]
 
-        state = metadata_state[id_]
-        if state is str:
-            if "gas" in metadata_state[id_]:
-                skipped_files.append((entry.path, f"gas state found, \"{data["id"]}\""))
-                continue
-        else:
-            unknown_states += 1
-        
         try:
-            data = format(raw_data, metadata_inchi, id_)
+            state = raw_data["state"]
+            if "gas" in state.lower():
+                continue
+        except:
+            unknown_states += 1     
+
+        try:
+            if raw_data["xunits"] == "MICROMETERS":
+                raw_data["firstx"] = 1/(raw_data["firstx"]*1e-4)
+                raw_data["lastx"] = 1/(raw_data["lastx"]*1e-4)
+            data = format(raw_data, metadata, id_)
         except KeyError as e:
             skipped_files.append((entry.path, e))
             continue
 
+
         data['xdata'], data['ydata'] = interpolate(data)
-        data['ydata'] = -np.log10(np.clip(data["ydata"], 1e-6, None)) # Transmission -> Absorbance
+
+        if raw_data["yunits"] == "TRANSMITTANCE":
+            data['ydata'] = -np.log10(np.clip(data["ydata"], 1e-6, None)) # Transmission -> Absorbance
+        elif raw_data["yunits"] == "ABSORBANCE":
+            pass
+        elif "micromol" in raw_data["yunits"]:
+            raise Exception
+        elif raw_data["yunits"] == "Reflectance":
+            data["ydata"] = data["ydata"] * raw_data["yfactor"]
+            if "diffuse" in raw_data["ylabel"].lower():
+                data["ydata"] = np.clip(data["ydata"], 1e-6, 1.0)
+                data["ydata"] = (1 - data["ydata"])**2 / (2 * data["ydata"])
+            elif "hemispherical" in raw_data["ylabel"].lower(): # Assuming non-opaque sample (no transmittance)
+                data['ydata'] = -np.log10(np.clip(1 - data["ydata"], 1e-6, None)) 
+            else:
+                print(raw_data)
+                raise Exception
+        elif raw_data["yunits"] == "dispersion index":
+            skipped_files.append((entry.path, f"y unit is dispersion index, \"{data["id"]}\""))
+            continue
+        elif raw_data["yunits"] == "absorption index":
+            skipped_files.append((entry.path, f"y unit is absorption index, \"{data["id"]}\""))
+            continue
+        
+
+
         data['ydata'] = normalize(data)
         
         if data["molecule"] is np.nan:
@@ -110,12 +137,13 @@ if __name__ == "__main__":
             continue
 
         accumulated_data.append(data)
+
         
     # Writing to csv
     df = pd.DataFrame(accumulated_data)[["fgroups", "xdata", "ydata"]]
     df.to_pickle(r"data-preprocessing-pipeline\spectra-nist.pkl")
 
     for i, file in enumerate(skipped_files):
-        print(f"{i+1} file:{file[0]}\nreason: {file[1]}\n")
+        print(f"{i+1} file:{file[0]}\nreason: {file[1]}")
     print(f"{len(skipped_files)} files skipped")
     print(f"{unknown_states} unknown states")
