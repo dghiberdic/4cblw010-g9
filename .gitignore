@@ -1,3 +1,6 @@
 data/raw/IR/
 data-preprocessing-pipeline/spectra-chemotion.pkl
 data-preprocessing-pipeline/spectra-nist.pkl
+data/processed/
+.DS_Store
+
