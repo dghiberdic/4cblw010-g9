@@ -15,10 +15,10 @@ wavenumbers = df["xdata"].iloc[0]
 spectrum = df["ydata"].iloc[0]
 X_train = np.stack(df["ydata"].values)
 
-emsa_model = fit_emsa_model(X_train)
+emsa_model = fit_emsa_model(X_train, strength= 0.1)
 
-noise_aug = vertical_noise(spectrum, noise_std=0.02)
-smooth_aug = smoothing(spectrum, sigma_range=(1.2, 2.0))
+noise_aug = vertical_noise(spectrum, noise_std=0.01)
+smooth_aug = smoothing(spectrum, sigma_range=(0.3, 0.8))
 shift_aug = horizontal_shift(spectrum, max_shift= 200)
 emsa_aug = emsa(spectrum, emsa_model)
 offset_aug = baseline_shift(spectrum, shift_range=(-0.08, 0.08))

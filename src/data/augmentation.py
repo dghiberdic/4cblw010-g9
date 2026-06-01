@@ -88,7 +88,7 @@ def horizontal_shift(
 
 def vertical_noise(
     x: np.ndarray,
-    noise_std: float = 0.01,
+    noise_std: float = 0.005,
 ) -> np.ndarray:
     """Add random noise to one spectrum's intensity values.
 
@@ -201,6 +201,7 @@ def emsa(
 def fit_emsa_model(
     X_train: np.ndarray,
     order: int = 2,
+    strength: float = 0.01,
 ) -> EMSA:
     """Fit an EMSC-based EMSA model using the whole training set.
 
@@ -224,7 +225,7 @@ def fit_emsa_model(
         order=order,
     )
     coefs = np.dot(emsa_model.A, X_train.T)
-    emsa_model.std_of_params = coefs.std(axis=1)
+    emsa_model.std_of_params = coefs.std(axis=1) * strength
     return emsa_model
 
 
