@@ -1,17 +1,23 @@
 """
 train_cnn.py
 
-1D CNN training script for FTIR functional-group prediction.
+Planned 1D CNN training script for FTIR functional-group prediction.
 
-Current purpose:
-- Define the CNN model architecture.
-- Load processed X/y files once available.
-- Train a multi-label functional-group classifier.
+Purpose:
+- Define a 1D CNN architecture for multi-label functional-group prediction.
+- Use processed FTIR spectra as fixed-length 1D signals.
+- Predict one probability per functional group.
 
-Expected data later:
-X_spectra.npy : shape (n_samples, spectrum_length)
-y_labels.npy  : shape (n_samples, n_functional_groups)
+Expected input:
+data/processed/X_spectra.npy : shape (n_samples, spectrum_length)
+data/processed/y_labels.npy  : shape (n_samples, n_functional_groups)
+
+Important:
+This script requires TensorFlow. If TensorFlow is not available in the local
+Python environment, run this script in Python 3.11/3.12 or Google Colab.
 """
+"TensorFlow is not installed or not compatible with this Python version. "
+"Use Python 3.11/3.12 or Google Colab, then install TensorFlow."
 
 from pathlib import Path
 import numpy as np
