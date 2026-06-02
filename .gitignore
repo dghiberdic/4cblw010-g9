@@ -1,4 +1,11 @@
 .venv
+venv/
+data/processed/*.pkl
+data/processed/*.npy
+outputs/models/*.joblib
+outputs/models/*.keras
+outputs/screening_results/
+outputs/model_results/
 data/raw/IR/
 data-preprocessing-pipeline/spectra-chemotion.pkl
 data-preprocessing-pipeline/spectra-nist.pkl
