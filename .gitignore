@@ -5,3 +5,4 @@ data-preprocessing-pipeline/spectra-nist.pkl
 data/processed/
 .DS_Store
 __pycache__/
+*.pyc
