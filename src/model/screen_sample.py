@@ -134,12 +134,14 @@ def interpret_pet_hydrolysis(prediction, confidence=None):
     if arene == 1:
         reasons.append("arene signal detected, which is consistent with PET/TPA aromatic structure")
 
-    if carboxylic == 1 or alcohol == 1:
-        result = "Hydrolysis-product-like"
-    elif ester == 1 and carboxylic == 0 and alcohol == 0:
+    if carboxylic == 1 and alcohol == 1:
+        result = "Strong hydrolysis-product-like"
+    elif carboxylic == 1 or alcohol == 1:
+        result = "Possible hydrolysis-product-like"
+    elif ester == 1 and arene == 1 and carboxylic == 0 and alcohol == 0:
         result = "PET-like"
-    elif arene == 1 and (ester == 1 or carboxylic == 1):
-        result = "PET/TPA-related but uncertain"
+    elif arene == 1 and ester == 0 and carboxylic == 0 and alcohol == 0:
+        result = "Uncertain aromatic"
     else:
         result = "Uncertain"
 
