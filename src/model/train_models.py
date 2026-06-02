@@ -25,6 +25,7 @@ import numpy as np
 import pandas as pd
 import joblib
 
+
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
@@ -42,6 +43,8 @@ from src.data.augmentation import (
     horizontal_shift,
 )
 
+# The order of these labels must match the column order in y_labels.npy.
+# Each model output corresponds to one of these functional groups.
 
 LABEL_NAMES = [
     "ester",
