@@ -9,13 +9,15 @@ from iterstrat.ml_stratifiers import MultilabelStratifiedShuffleSplit
 
 
 df = pd.read_pickle(r"data-preprocessing-pipeline\spectra-nist.pkl")
+
 print(df)
+print(df.size)
+
 fgroups = pd.json_normalize(df.loc[:, "fgroups"])
 fgroup_counts = fgroups.sum().sort_values(ascending=False)
-print(fgroups.sum())
 
 no_groups = (fgroups.sum(axis=1) == 0).sum()
-print(f"{no_groups} rows have no functional groups assigned")
+print(fgroup_counts, no_groups)
 
 fgroup_counts.plot(kind='bar', figsize=(12, 6))
 plt.ylabel("Counts")
