@@ -100,14 +100,15 @@ def fit(spectrum_data: dict) -> np.ndarray:
 def smooth(spectrum_data: dict) -> np.ndarray:
     return savgol_filter(spectrum_data['ydata'], window_length=31, polyorder=3)
 
-def normalize(spectrum_data: dict) -> list[np.ndarray, np.ndarray]:
+def normalize(spectrum_data: dict) -> np.ndarray:
     """
     Goal:
-    - Normalize to [0, 1] using Min-Max normalization
+    - Standard Normal Variate (SNV): center each spectrum to mean=0, std=1.
+      This removes additive and multiplicative scatter effects and preserves
+      relative peak heights across spectra from different sources/instruments.
     """
     y = spectrum_data['ydata']
-    y_norm = (y - y.min())/(y.max() - y.min())
-    return y_norm
+    return (y - y.mean()) / y.std()
 
 def label(spectrum_data: dict, smiles=False, inchi=False) -> list[np.ndarray]:
     """

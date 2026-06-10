@@ -26,7 +26,7 @@ import pandas as pd
 import joblib
 
 
-from sklearn.model_selection import train_test_split
+from iterstrat.ml_stratifiers import MultilabelStratifiedShuffleSplit
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
     f1_score,
@@ -68,6 +68,12 @@ LABEL_NAMES = [
     "amide",
     "peroxide",
 ]
+
+# PET hydrolysis markers: ester (PET backbone), carboxylic_acid (TPA product),
+# alcohol (EG product), arene (aromatic backbone). All have 500+ positives.
+HYDROLYSIS_NAMES = ("ester", "carboxylic_acid", "alcohol", "arene")
+HYDROLYSIS_IDX = [LABEL_NAMES.index(n) for n in HYDROLYSIS_NAMES]
+CONTAMINANT_IDX = [i for i in range(len(LABEL_NAMES)) if i not in HYDROLYSIS_IDX]
 
 
 def load_data():
@@ -135,6 +141,7 @@ def augment_training_data(X_train, y_train, copies_per_sample=1):
     y_aug = []
 
     rng = np.random.default_rng(42)
+    np.random.seed(42)  # seeds legacy API used inside each augmentation function
 
     for x, label in zip(X_train, y_train):
         for _ in range(copies_per_sample):
@@ -182,16 +189,29 @@ def evaluate_model(model, X_test, y_test, model_name):
     macro_f1 = f1_score(y_test, y_pred, average="macro", zero_division=0)
     samples_f1 = f1_score(y_test, y_pred, average="samples", zero_division=0)
 
+    hydrolysis_macro_f1 = f1_score(
+        y_test[:, HYDROLYSIS_IDX], y_pred[:, HYDROLYSIS_IDX],
+        average="macro", zero_division=0,
+    )
+    contaminant_macro_f1 = f1_score(
+        y_test[:, CONTAMINANT_IDX], y_pred[:, CONTAMINANT_IDX],
+        average="macro", zero_division=0,
+    )
+
     summary = {
         "model": model_name,
         "micro_f1": float(micro_f1),
         "macro_f1": float(macro_f1),
         "samples_f1": float(samples_f1),
+        "hydrolysis_macro_f1": float(hydrolysis_macro_f1),
+        "contaminant_macro_f1": float(contaminant_macro_f1),
     }
 
     print("Micro F1:", micro_f1)
     print("Macro F1:", macro_f1)
     print("Samples F1:", samples_f1)
+    print(f"Hydrolysis-group Macro F1 ({', '.join(HYDROLYSIS_NAMES)}):", hydrolysis_macro_f1)
+    print("Contaminant-group Macro F1 (remaining 16 labels):", contaminant_macro_f1)
 
     report_dict = classification_report(
         y_test,
@@ -232,14 +252,12 @@ def main():
 
     label_distribution(y)
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
-        test_size=0.2,
-        random_state=42,
-    )
+    msss = MultilabelStratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+    train_idx, test_idx = next(msss.split(X, y))
+    X_train, X_test = X[train_idx], X[test_idx]
+    y_train, y_test = y[train_idx], y[test_idx]
 
-    print("\nTrain/test split")
+    print("\nTrain/test split (multilabel-stratified)")
     print("X_train:", X_train.shape)
     print("X_test:", X_test.shape)
     print("y_train:", y_train.shape)

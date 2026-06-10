@@ -1,0 +1,12 @@
+ester
+carboxylic_acid
+alkane
+alkene
+alcohol
+arene
+amine
+ketone
+ether
+nitro
+sulfonic_acid
+amide

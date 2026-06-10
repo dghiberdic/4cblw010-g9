@@ -1,5 +1,9 @@
 .venv
 venv/
+data/*
+data/oversampled/*.npy
+data/snv_train/*.npy
+data/v3/
 data/processed/*.pkl
 data/processed/*.npy
 outputs/models/*.joblib
