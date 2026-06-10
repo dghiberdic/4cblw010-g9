@@ -94,11 +94,11 @@ def fit(spectrum_data: dict) -> np.ndarray:
     """
     y = spectrum_data['ydata']
     fitter = Baseline(x_data=spectrum_data['xdata'])
-    y_corr, params = fitter.asls(y, lam=1e5, p=0.01)
-    return y - y_corr
+    baseline, params = fitter.airpls(y, lam=1e6)
+    return y - baseline
 
 def smooth(spectrum_data: dict) -> np.ndarray:
-    return savgol_filter(spectrum_data['ydata'], window_length=5, polyorder=3)
+    return savgol_filter(spectrum_data['ydata'], window_length=31, polyorder=3)
 
 def normalize(spectrum_data: dict) -> list[np.ndarray, np.ndarray]:
     """

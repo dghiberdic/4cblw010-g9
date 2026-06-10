@@ -64,7 +64,7 @@ if __name__ == "__main__":
         # INTERPOLATE, SMOOTH, FIT & NORMALIZE
         data['xdata'], data['ydata'] = interpolate(data, INTERVAL)
         data['ydata'] = smooth(data)
-        data['ydata'] = fit(data)
+        #data['ydata'] = fit(data)
         data['ydata'] = normalize(data)
         
         # LABELLING

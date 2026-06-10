@@ -3,6 +3,7 @@ from jcamp import jcamp_read
 import json
 import pandas as pd
 from data_preproccesing_lib import *
+import numpy as np
 
 """
 preprocessing pipeline
@@ -39,6 +40,8 @@ if __name__ == "__main__":
     for entry in os.scandir(dir):
         i+=1
         print(f"{i}/{entries}\t{entry.path}")
+        if entry.name != 'bea6197c-97c4-4174-9200-f17305a947d5':
+            continue
 
         # PARSING
         jcampfile = open(entry, "r")
@@ -80,13 +83,19 @@ if __name__ == "__main__":
             continue
 
         accumulated_data.append(data)
+        break
 
-    
-    plot_spectrum("", data['xdata'], data['ydata'])
+    plot_spectrum("Spectra of 3-Methylquinoxalin-2-ol with normalization", data['xdata'], data['ydata'])
+
+    #mask = (data['xdata'] >= 2000) & (data['xdata'] <= 2500)
+    #plot_spectrum("Spectra of 3-Methylquinoxalin-2-ol without smoothing", 
+    #            data['xdata'][mask], 
+    #            data['ydata'][mask])
+
 
     # Writing to csv
     df = pd.DataFrame(accumulated_data)[["fgroups", "xdata", "ydata"]]
     df.to_pickle(r"data-preprocessing-pipeline\spectra-chemotion.pkl")
 
     for i, file in enumerate(skipped_files):
-        print(f"{i+1} file:{file[0].name}\nreason: {file[1]}")
+        print(f"{i+1} file:{file[0]}\nreason: {file[1]}")
