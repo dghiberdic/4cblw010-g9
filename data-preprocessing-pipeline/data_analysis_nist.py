@@ -7,11 +7,13 @@ from iterstrat.ml_stratifiers import MultilabelStratifiedShuffleSplit
 
 
 df = pd.read_pickle(r"data-preprocessing-pipeline\spectra-nist.pkl")
+fgroups1 = pd.json_normalize(df.loc[:, "fgroups"])
 
-print(df)
-print(df.size)
+df = pd.read_pickle(r"data-preprocessing-pipeline\spectra-chemotion.pkl")
+fgroups2 = pd.json_normalize(df.loc[:, "fgroups"])
 
-fgroups = pd.json_normalize(df.loc[:, "fgroups"])
+fgroups = pd.concat([fgroups1, fgroups2])
+print(fgroups)
 fgroup_counts = fgroups.sum().sort_values(ascending=False)
 
 no_groups = (fgroups.sum(axis=1) == 0).sum()
