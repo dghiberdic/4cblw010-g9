@@ -5,8 +5,6 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 from iterstrat.ml_stratifiers import MultilabelStratifiedShuffleSplit
 
-#! THIS FILE WAS CODED WITH AI
-
 
 df = pd.read_pickle(r"data-preprocessing-pipeline\spectra-nist.pkl")
 
